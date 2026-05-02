@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+:root {
+  --gold: #E6A817;
+  --navy: #1E2D4E;
+  --bg: #EEF2F8;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  font-family: 'Inter', system-ui, sans-serif;
+  min-height: 100vh;
+}
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateX(24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.step-enter { animation: fadeSlideIn 0.32s ease forwards; }
+
+.avatar-card {
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.avatar-card:hover { transform: translateY(-4px); }
+.avatar-card.selected {
+  border-color: #1E2D4E;
+  box-shadow: 0 0 0 2px #1E2D4E, 0 10px 28px rgba(30,45,78,0.18);
+  background: #f0f4fa;
+}
+
+.day-btn { transition: all 0.15s ease; }
+.day-btn.selected {
+  background: #1E2D4E;
+  color: white;
+  border-color: #1E2D4E;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #E6A817 !important;
+  box-shadow: 0 0 0 3px rgba(230,168,23,0.18) !important;
+  outline: none;
+}
+
+.course-scroll::-webkit-scrollbar { display: none; }
+.course-scroll { -ms-overflow-style: none; scrollbar-width: none; }
