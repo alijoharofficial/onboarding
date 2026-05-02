@@ -10,71 +10,32 @@ export interface CourseData {
 interface Course {
   id: string;
   name: string;
-  fullName: string;
   duration: string;
   basePrice: number;
-  icon: React.ReactNode;
+  img: string;
 }
 
-const courses: Course[] = [
+const COURSES: Course[] = [
   {
     id: "quranic",
-    name: "Learn Quranic",
-    fullName: "Learn Quranic Arabic",
-    duration: "2 Years",
-    basePrice: 50,
-    icon: (
-      <svg viewBox="0 0 60 60" className="w-14 h-14" fill="none">
-        <circle cx="30" cy="30" r="30" fill="rgba(255,255,255,0.1)" />
-        {/* Teacher figure */}
-        <circle cx="22" cy="18" r="7" fill="#d1d5db" />
-        <path d="M10 46 Q10 32 22 30 Q30 28 30 46" fill="#9ca3af" />
-        {/* Student */}
-        <circle cx="40" cy="22" r="5" fill="#d1d5db" />
-        <path d="M32 46 Q32 34 40 32 Q48 34 48 46" fill="#9ca3af" />
-        {/* Book */}
-        <rect x="18" y="38" width="14" height="10" rx="1" fill="#fbbf24" />
-        <rect x="18" y="38" width="2" height="10" rx="1" fill="#d97706" />
-      </svg>
-    ),
+    name: "Learn Quranic Arabic",
+    duration: "1 Year",
+    basePrice: 40,
+    img: "https://quranacademy.live/assets/home/pricing1.png",
   },
   {
     id: "recitation",
-    name: "Recitation of",
-    fullName: "Recitation of the Holy Quran",
+    name: "Recitation & Tajweed",
     duration: "1.5 Years",
     basePrice: 45,
-    icon: (
-      <svg viewBox="0 0 60 60" className="w-14 h-14" fill="none">
-        <circle cx="30" cy="30" r="30" fill="rgba(230,168,23,0.1)" />
-        {/* Person reading */}
-        <circle cx="30" cy="16" r="8" fill="#fcd34d" />
-        <path d="M16 50 Q16 34 30 32 Q44 34 44 50" fill="#fbbf24" />
-        {/* Quran book */}
-        <rect x="18" y="42" width="24" height="16" rx="2" fill="#1E2D4E" />
-        <rect x="18" y="42" width="3" height="16" rx="1" fill="#374151" />
-        <path d="M23 47 H40 M23 51 H40 M23 55 H40" stroke="white" strokeWidth="1" opacity="0.5" />
-      </svg>
-    ),
+    img: "https://quranacademy.live/assets/home/pricing2.png",
   },
   {
     id: "memorization",
-    name: "Memorization &",
-    fullName: "Memorization & Tajweed",
+    name: "Hifz & Memorisation",
     duration: "3 Years",
     basePrice: 60,
-    icon: (
-      <svg viewBox="0 0 60 60" className="w-14 h-14" fill="none">
-        <circle cx="30" cy="30" r="30" fill="rgba(255,255,255,0.1)" />
-        {/* Two people */}
-        <circle cx="20" cy="18" r="6" fill="#d1d5db" />
-        <path d="M10 44 Q10 30 20 28 Q28 28 28 44" fill="#9ca3af" />
-        <circle cx="40" cy="18" r="6" fill="#d1d5db" />
-        <path d="M32 44 Q32 30 40 28 Q50 30 50 44" fill="#9ca3af" />
-        {/* Star / memorization symbol */}
-        <path d="M30 34 L31.5 38 H36 L32.5 40.5 L34 45 L30 42 L26 45 L27.5 40.5 L24 38 H28.5 Z" fill="#fbbf24" />
-      </svg>
-    ),
+    img: "https://quranacademy.live/assets/home/pricing3.png",
   },
 ];
 
@@ -87,117 +48,100 @@ interface Props {
 
 export default function Step3Course({ data, onChange, onBack, onNext }: Props) {
   const [activeIdx, setActiveIdx] = useState(() =>
-    Math.max(0, courses.findIndex((c) => c.id === data.courseId))
+    Math.max(0, COURSES.findIndex(c => c.id === data.courseId))
   );
 
-  const selected = courses[activeIdx];
-
-  const setField = (field: keyof CourseData, val: string | number) =>
-    onChange({ ...data, [field]: val });
-
+  const selected = COURSES[activeIdx];
   const classesPerMonth = data.daysPerWeek * 4;
-  const price = Math.round(
-    (selected.basePrice * (data.daysPerWeek / 2)) *
-      (data.minutesPerClass / 30)
-  );
+  const price = Math.round(selected.basePrice * (data.daysPerWeek / 2) * (data.minutesPerClass / 30));
 
-  const selectCourse = (idx: number) => {
-    setActiveIdx(idx);
-    setField("courseId", courses[idx].id);
+  const selectCourse = (i: number) => {
+    setActiveIdx(i);
+    onChange({ ...data, courseId: COURSES[i].id });
   };
 
   return (
     <div className="step-enter w-full">
-      <h1 className="text-3xl font-extrabold text-gray-900 text-center mb-8">Select Course</h1>
+      <h1 className="text-2xl font-extrabold text-gray-900 mb-1 tracking-tight">Select a Course</h1>
+      <p className="text-sm text-gray-400 mb-5">Choose the programme that best fits your learning goals</p>
 
       {/* Course cards */}
-      <div className="flex gap-3 mb-6 overflow-x-auto course-scroll pb-1">
-        {courses.map((c, i) => {
+      <div className="flex gap-3 mb-4 overflow-x-auto course-scroll pb-1">
+        {COURSES.map((c, i) => {
           const isActive = i === activeIdx;
           return (
             <button
               key={c.id}
               onClick={() => selectCourse(i)}
-              className={`course-card flex-shrink-0 flex flex-col items-center justify-center gap-2 rounded-2xl py-5 px-4 w-36 transition-all duration-200 ${
-                isActive
-                  ? "bg-white border-2 border-gray-200 shadow-lg"
-                  : "text-white border-2 border-transparent"
-              }`}
+              className="flex-shrink-0 flex flex-col items-center justify-end gap-2 rounded-2xl py-4 px-3 w-36 h-36 relative overflow-hidden transition-all duration-200 border-2"
               style={{
-                background: isActive ? "white" : "linear-gradient(145deg,#1E2D4E,#2d4070)",
+                background: isActive ? "#1E2D4E" : "white",
+                borderColor: isActive ? "#1E2D4E" : "#e5e7eb",
+                boxShadow: isActive ? "0 8px 24px rgba(30,45,78,0.25)" : undefined,
               }}
             >
-              {c.icon}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={c.img}
+                alt={c.name}
+                className="absolute inset-0 w-full h-full object-cover"
+                style={{ opacity: isActive ? 0.25 : 0.9 }}
+              />
               <span
-                className={`text-xs font-semibold text-center leading-tight ${
-                  isActive ? "text-gray-800" : "text-white"
-                }`}
+                className="relative z-10 text-xs font-bold text-center leading-tight"
+                style={{ color: isActive ? "white" : "#1E2D4E" }}
               >
                 {c.name}
               </span>
-              {isActive && (
-                <svg className="w-4 h-4 text-gray-400 mt-1" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" />
-                </svg>
-              )}
             </button>
           );
         })}
       </div>
 
       {/* Details panel */}
-      <div className="bg-gray-50 border border-gray-100 rounded-2xl p-5 space-y-4 mb-6">
-        <Row label="Course Duration:" value={selected.duration} />
+      <div className="rounded-2xl border border-gray-100 overflow-hidden mb-4" style={{ background: "#f9f8f5" }}>
+        <div className="px-5 py-4 space-y-3.5">
+          <Row label="Course Duration" value={selected.duration} />
+          <Row
+            label="Days / Week"
+            value={
+              <Counter val={data.daysPerWeek} min={1} max={7}
+                onChange={v => onChange({ ...data, daysPerWeek: v })} />
+            }
+          />
+          <Row
+            label="Duration / Class"
+            value={
+              <Counter val={data.minutesPerClass} min={30} max={90} step={30}
+                format={v => `${v} min`}
+                onChange={v => onChange({ ...data, minutesPerClass: v })} />
+            }
+          />
+          <Row label="Classes / Month" value={`${classesPerMonth} classes`} />
+        </div>
 
-        <Row
-          label="Days/Week:"
-          value={
-            <Counter
-              val={data.daysPerWeek}
-              min={1}
-              max={7}
-              onChange={(v) => setField("daysPerWeek", v)}
-            />
-          }
-        />
-
-        <Row
-          label="Duration/Class:"
-          value={
-            <Counter
-              val={data.minutesPerClass}
-              min={30}
-              max={90}
-              step={30}
-              format={(v) => `${v} Mins`}
-              onChange={(v) => setField("minutesPerClass", v)}
-            />
-          }
-        />
-
-        <Row label="Classes/Month:" value={`${classesPerMonth} Classes`} />
-
-        <div className="border-t border-gray-200 pt-4 flex items-center justify-between">
-          <span className="font-bold text-gray-800 text-base">Price:</span>
-          <span className="font-extrabold text-xl" style={{ color: "#E6A817" }}>
-            ${price} / Month
-          </span>
+        {/* Price banner */}
+        <div
+          className="flex items-center justify-between px-5 py-4"
+          style={{ background: "#1E2D4E" }}
+        >
+          <div>
+            <p className="text-white font-bold text-sm">Monthly Price</p>
+            <p className="text-gray-400 text-xs">Billed monthly, cancel anytime</p>
+          </div>
+          <span className="font-extrabold text-2xl" style={{ color: "#E6A817" }}>${price}</span>
         </div>
       </div>
 
       <div className="flex justify-between">
-        <button
-          onClick={onBack}
-          className="px-6 py-3 rounded-xl bg-gray-200 text-gray-600 font-semibold hover:bg-gray-300 transition-colors"
-        >
-          Back
+        <button onClick={onBack}
+          className="flex items-center gap-1.5 px-5 py-3 rounded-xl border border-gray-200 text-gray-600 font-semibold text-sm hover:bg-gray-50 transition-colors">
+          ← Back
         </button>
-        <button
-          onClick={onNext}
-          className="px-8 py-3 rounded-xl font-bold text-sm text-white transition-all duration-200 hover:opacity-90"
-          style={{ background: "linear-gradient(135deg,#1E2D4E,#2d4070)" }}
-        >
-          Next
+        <button onClick={onNext}
+          className="px-7 py-3 rounded-xl font-bold text-sm text-white hover:opacity-90 transition-all"
+          style={{ background: "linear-gradient(135deg,#1E2D4E,#2d4070)" }}>
+          Continue →
         </button>
       </div>
     </div>
@@ -207,15 +151,13 @@ export default function Step3Course({ data, onChange, onBack, onNext }: Props) {
 function Row({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div className="flex items-center justify-between">
-      <span className="text-sm text-gray-600">{label}</span>
+      <span className="text-sm text-gray-500">{label}</span>
       <span className="font-semibold text-gray-800 text-sm">{value}</span>
     </div>
   );
 }
 
-function Counter({
-  val, min, max, step = 1, format, onChange,
-}: {
+function Counter({ val, min, max, step = 1, format, onChange }: {
   val: number; min: number; max: number; step?: number;
   format?: (v: number) => string; onChange: (v: number) => void;
 }) {
@@ -223,19 +165,17 @@ function Counter({
     <div className="flex items-center gap-2">
       <button
         onClick={() => onChange(Math.max(min, val - step))}
-        className="w-7 h-7 rounded-lg border border-gray-300 flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-colors font-bold text-sm"
-      >
-        −
-      </button>
-      <span className="text-sm font-bold min-w-[64px] text-center">
+        className="w-7 h-7 rounded-full border-2 flex items-center justify-center font-bold text-sm transition-colors hover:bg-gray-100"
+        style={{ borderColor: "#E6A817", color: "#E6A817" }}
+      >−</button>
+      <span className="text-sm font-bold min-w-[52px] text-center">
         {format ? format(val) : val}
       </span>
       <button
         onClick={() => onChange(Math.min(max, val + step))}
-        className="w-7 h-7 rounded-lg border border-gray-300 flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-colors font-bold text-sm"
-      >
-        +
-      </button>
+        className="w-7 h-7 rounded-full border-2 flex items-center justify-center font-bold text-sm transition-colors hover:bg-gray-100"
+        style={{ borderColor: "#E6A817", color: "#E6A817" }}
+      >+</button>
     </div>
   );
 }

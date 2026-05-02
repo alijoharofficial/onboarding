@@ -5,6 +5,7 @@ export interface ScheduleData {
   timezone: string;
   startDate: string;
   startTime: string;
+  notes: string;
 }
 
 interface Props {
@@ -33,154 +34,13 @@ const TIMEZONES = [
 ];
 
 const TIMES = [
-  "06:00 AM", "07:00 AM", "08:00 AM", "09:00 AM",
-  "10:00 AM", "11:00 AM", "12:00 PM", "01:00 PM",
-  "02:00 PM", "03:00 PM", "04:00 PM", "05:00 PM",
-  "06:00 PM", "07:00 PM", "08:00 PM", "09:00 PM",
-  "10:00 PM",
+  "06:00 AM","07:00 AM","08:00 AM","09:00 AM","10:00 AM","11:00 AM",
+  "12:00 PM","01:00 PM","02:00 PM","03:00 PM","04:00 PM","05:00 PM",
+  "06:00 PM","07:00 PM","08:00 PM","09:00 PM","10:00 PM",
 ];
 
-const selectCls =
-  "w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 bg-white appearance-none focus:outline-none transition-all duration-150";
-
-export default function Step4Schedule({ data, daysNeeded, onChange, onBack, onSubmit }: Props) {
-  const toggleDay = (day: string) => {
-    const already = data.days.includes(day);
-    let next: string[];
-    if (already) {
-      next = data.days.filter((d) => d !== day);
-    } else if (data.days.length < daysNeeded) {
-      next = [...data.days, day];
-    } else {
-      // Replace oldest
-      next = [...data.days.slice(1), day];
-    }
-    onChange({ ...data, days: next });
-  };
-
-  const isValid =
-    data.days.length === daysNeeded &&
-    data.timezone &&
-    data.startDate &&
-    data.startTime;
-
-  return (
-    <div className="step-enter w-full">
-      <h1 className="text-3xl font-extrabold text-gray-900 text-center mb-8">
-        Schedule Details
-      </h1>
-
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5 mb-6">
-
-        {/* Day selector */}
-        <div>
-          <label className="text-sm font-semibold text-gray-700 block mb-3">
-            Select Days ({data.days.length}/{daysNeeded} selected)
-          </label>
-          <div className="flex gap-2 flex-wrap">
-            {DAYS.map((d) => (
-              <button
-                key={d}
-                onClick={() => toggleDay(d)}
-                className={`day-btn w-11 h-11 rounded-full border-2 text-sm font-semibold transition-all duration-150 ${
-                  data.days.includes(d)
-                    ? "selected bg-[#1E2D4E] text-white border-[#1E2D4E]"
-                    : "border-gray-300 text-gray-600 hover:border-gray-400 bg-white"
-                }`}
-              >
-                {d}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Timezone */}
-        <div>
-          <label className="text-sm font-semibold text-gray-700 block mb-1">Timezone</label>
-          <div className="relative">
-            <select
-              value={data.timezone}
-              onChange={(e) => onChange({ ...data, timezone: e.target.value })}
-              className={`${selectCls} pr-10 ${!data.timezone ? "text-gray-400" : ""}`}
-            >
-              <option value="" disabled>Select...</option>
-              {TIMEZONES.map((tz) => (
-                <option key={tz} value={tz}>{tz}</option>
-              ))}
-            </select>
-            <Chevron />
-          </div>
-        </div>
-
-        {/* Start Date */}
-        <div>
-          <label className="text-sm font-semibold text-gray-700 block mb-1">
-            Preferred Start Date
-          </label>
-          <div className="relative">
-            <select
-              value={data.startDate}
-              onChange={(e) => onChange({ ...data, startDate: e.target.value })}
-              className={`${selectCls} pr-10 ${!data.startDate ? "text-gray-400" : ""}`}
-            >
-              <option value="" disabled>Select start date</option>
-              {generateDates().map((d) => (
-                <option key={d.value} value={d.value}>{d.label}</option>
-              ))}
-            </select>
-            <Chevron />
-          </div>
-        </div>
-
-        {/* Start Time */}
-        <div>
-          <label className="text-sm font-semibold text-gray-700 block mb-1">
-            Preferred Start Time
-          </label>
-          <div className="relative">
-            <select
-              value={data.startTime}
-              onChange={(e) => onChange({ ...data, startTime: e.target.value })}
-              className={`${selectCls} pr-10 ${!data.startTime ? "text-gray-400" : ""}`}
-            >
-              <option value="" disabled>Select time</option>
-              {TIMES.map((t) => (
-                <option key={t} value={t}>{t}</option>
-              ))}
-            </select>
-            <Chevron />
-          </div>
-        </div>
-      </div>
-
-      <div className="flex items-center justify-between">
-        <button
-          onClick={onBack}
-          className="px-6 py-3 rounded-xl bg-gray-200 text-gray-600 font-semibold hover:bg-gray-300 transition-colors"
-        >
-          Back
-        </button>
-        <div className="flex items-center gap-3">
-          {!isValid && (
-            <span className="text-xs text-gray-400 italic">Fill all fields to continue</span>
-          )}
-          <button
-            onClick={onSubmit}
-            disabled={!isValid}
-            className="px-8 py-3 rounded-xl font-bold text-sm transition-all duration-200"
-            style={{
-              background: isValid ? "linear-gradient(135deg,#1E2D4E,#2d4070)" : "#d1d5db",
-              color: isValid ? "white" : "#9ca3af",
-              cursor: isValid ? "pointer" : "not-allowed",
-            }}
-          >
-            Submit
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
+const labelCls = "block text-[10px] font-bold tracking-widest text-gray-500 uppercase mb-1.5";
+const selectCls = "w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 bg-white appearance-none focus:outline-none focus:border-yellow-400 focus:shadow-[0_0_0_3px_rgba(230,168,23,0.15)] transition-all";
 
 function Chevron() {
   return (
@@ -192,14 +52,125 @@ function Chevron() {
   );
 }
 
-function generateDates(): { value: string; label: string }[] {
-  const out: { value: string; label: string }[] = [];
-  const now = new Date();
-  const fmt = new Intl.DateTimeFormat("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" });
-  for (let i = 1; i <= 30; i++) {
-    const d = new Date(now);
-    d.setDate(now.getDate() + i);
-    out.push({ value: d.toISOString().slice(0, 10), label: fmt.format(d) });
-  }
-  return out;
+export default function Step4Schedule({ data, daysNeeded, onChange, onBack, onSubmit }: Props) {
+  const toggleDay = (day: string) => {
+    const already = data.days.includes(day);
+    let next: string[];
+    if (already) {
+      next = data.days.filter(d => d !== day);
+    } else if (data.days.length < daysNeeded) {
+      next = [...data.days, day];
+    } else {
+      next = [...data.days.slice(1), day];
+    }
+    onChange({ ...data, days: next });
+  };
+
+  const isValid = data.days.length === daysNeeded && data.timezone && data.startDate && data.startTime;
+
+  return (
+    <div className="step-enter w-full">
+      <h1 className="text-2xl font-extrabold text-gray-900 mb-1 tracking-tight">Schedule Your Classes</h1>
+      <p className="text-sm text-gray-400 mb-5">Choose your preferred days and timing — we&apos;ll match you with the right teacher</p>
+
+      <div className="space-y-5">
+        {/* Day selector */}
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <label className={labelCls} style={{ marginBottom: 0 }}>Select Days</label>
+            <span className="text-xs font-bold" style={{ color: "#E6A817" }}>
+              {data.days.length} / {daysNeeded} selected
+            </span>
+          </div>
+          <div className="flex gap-2 flex-wrap mt-2">
+            {DAYS.map(d => (
+              <button
+                key={d}
+                onClick={() => toggleDay(d)}
+                className="w-11 h-11 rounded-full border-2 text-xs font-bold transition-all duration-150"
+                style={
+                  data.days.includes(d)
+                    ? { background: "#1E2D4E", color: "white", borderColor: "#1E2D4E" }
+                    : { background: "white", color: "#6b7280", borderColor: "#d1d5db" }
+                }
+              >
+                {d}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Timezone */}
+        <div>
+          <label className={labelCls}>Timezone</label>
+          <div className="relative">
+            <select value={data.timezone} onChange={e => onChange({ ...data, timezone: e.target.value })}
+              className={`${selectCls} pr-10 ${!data.timezone ? "text-gray-400" : ""}`}>
+              <option value="" disabled>Select your timezone...</option>
+              {TIMEZONES.map(tz => <option key={tz} value={tz}>{tz}</option>)}
+            </select>
+            <Chevron />
+          </div>
+        </div>
+
+        {/* Start date + time */}
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className={labelCls}>Preferred Start Date</label>
+            <input
+              type="date"
+              value={data.startDate}
+              onChange={e => onChange({ ...data, startDate: e.target.value })}
+              className={selectCls}
+            />
+          </div>
+          <div>
+            <label className={labelCls}>Preferred Start Time</label>
+            <div className="relative">
+              <select value={data.startTime} onChange={e => onChange({ ...data, startTime: e.target.value })}
+                className={`${selectCls} pr-10 ${!data.startTime ? "text-gray-400" : ""}`}>
+                <option value="" disabled>Select time...</option>
+                {TIMES.map(t => <option key={t} value={t}>{t}</option>)}
+              </select>
+              <Chevron />
+            </div>
+          </div>
+        </div>
+
+        {/* Special requests */}
+        <div>
+          <label className={labelCls}>
+            Any Special Requests or Notes?{" "}
+            <span className="normal-case tracking-normal font-normal text-gray-400">(optional)</span>
+          </label>
+          <textarea
+            rows={3}
+            placeholder="e.g. Beginner level, prefers female teacher..."
+            value={data.notes}
+            onChange={e => onChange({ ...data, notes: e.target.value })}
+            className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-800 placeholder-gray-400 bg-white focus:outline-none focus:border-yellow-400 focus:shadow-[0_0_0_3px_rgba(230,168,23,0.15)] transition-all resize-none"
+          />
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between mt-5">
+        <button onClick={onBack}
+          className="flex items-center gap-1.5 px-5 py-3 rounded-xl border border-gray-200 text-gray-600 font-semibold text-sm hover:bg-gray-50 transition-colors">
+          ← Back
+        </button>
+        <div className="flex items-center gap-3">
+          {!isValid && <span className="text-xs text-gray-400 italic">Fill all fields to continue</span>}
+          <button onClick={onSubmit} disabled={!isValid}
+            className="px-7 py-3 rounded-xl font-bold text-sm transition-all duration-200"
+            style={{
+              background: isValid ? "linear-gradient(135deg,#1E2D4E,#2d4070)" : "#e5e7eb",
+              color: isValid ? "white" : "#9ca3af",
+              cursor: isValid ? "pointer" : "not-allowed",
+            }}>
+            Submit Enrolment ✓
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 }
