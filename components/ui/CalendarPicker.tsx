@@ -70,7 +70,7 @@ export default function CalendarPicker({ value, onChange, minDaysFromNow = 4, ma
       </button>
 
       {open && (
-        <div className="absolute z-50 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 p-5 w-72 left-0">
+        <div className="absolute z-50 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 p-5 w-72 right-0">
           {/* Month nav */}
           <div className="flex items-center justify-between mb-4">
             <button onClick={prevMonth}

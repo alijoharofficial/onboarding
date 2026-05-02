@@ -350,7 +350,7 @@ export default function Step2StudentDetails({ students, allowMultiple, onChange,
     <div className="step-enter w-full">
       <h1 className="text-2xl font-extrabold text-gray-900 mb-1 tracking-tight">Student Details</h1>
       <p className="text-sm text-gray-400 mb-5">Provide information for each student joining the programme</p>
-      <div className="max-h-[52vh] overflow-y-auto pr-1">
+      <div className="pr-1">
         {students.map((s, i) => (
           <StudentCard key={i} student={s} index={i} allowMultiple={allowMultiple}
             onChange={st => update(i, st)}
