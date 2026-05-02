@@ -306,7 +306,6 @@ function StudentCard({ student, index, allowMultiple, onChange, onRemove }: {
               <CalendarPicker
                 value={student.dob}
                 onChange={v => set("dob", v)}
-                minDaysFromNow={0}
                 maxDate={TODAY}
                 disableWeekends={false}
                 placeholder="Date of birth"

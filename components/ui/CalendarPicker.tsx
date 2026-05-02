@@ -4,35 +4,56 @@ import { useState, useRef, useEffect } from "react";
 interface Props {
   value: string; // YYYY-MM-DD
   onChange: (v: string) => void;
-  minDaysFromNow?: number;
-  maxDate?: string; // YYYY-MM-DD, inclusive upper bound
+  minDaysFromNow?: number;   // undefined = no lower bound
+  maxDate?: string;          // YYYY-MM-DD inclusive upper bound (DOB mode)
   disableWeekends?: boolean;
   placeholder?: string;
 }
 
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const MONTHS_SHORT = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const DAY_HEADERS = ["Mo","Tu","We","Th","Fr","Sa","Su"];
 
-export default function CalendarPicker({ value, onChange, minDaysFromNow = 4, maxDate, disableWeekends = true, placeholder }: Props) {
+export default function CalendarPicker({
+  value, onChange,
+  minDaysFromNow,
+  maxDate,
+  disableWeekends = true,
+  placeholder,
+}: Props) {
   const [open, setOpen] = useState(false);
-  const today = new Date(); today.setHours(0,0,0,0);
-  const minDate = new Date(today); minDate.setDate(today.getDate() + minDaysFromNow);
+  const [pickingYear, setPickingYear] = useState(false);
+
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+
+  const minDateObj = minDaysFromNow !== undefined
+    ? (() => { const d = new Date(today); d.setDate(today.getDate() + minDaysFromNow); return d; })()
+    : null;
   const maxDateObj = maxDate ? new Date(maxDate + "T00:00:00") : null;
 
-  const [view, setView] = useState(() => {
-    const d = value ? new Date(value + "T00:00:00") : new Date(minDate);
-    return { year: d.getFullYear(), month: d.getMonth() };
-  });
+  // DOB mode: default view = 25 years ago. Schedule mode: default view = minDate.
+  const defaultViewDate = value
+    ? new Date(value + "T00:00:00")
+    : maxDateObj
+      ? new Date(today.getFullYear() - 25, today.getMonth(), 1)
+      : minDateObj ?? today;
+
+  const [view, setView] = useState({ year: defaultViewDate.getFullYear(), month: defaultViewDate.getMonth() });
 
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    const h = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false); };
+    const h = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false);
+        setPickingYear(false);
+      }
+    };
     document.addEventListener("mousedown", h);
     return () => document.removeEventListener("mousedown", h);
   }, []);
 
   const isDisabled = (d: Date) =>
-    d < minDate ||
+    (minDateObj !== null && d < minDateObj!) ||
     (maxDateObj !== null && d > maxDateObj) ||
     (disableWeekends && (d.getDay() === 0 || d.getDay() === 6));
 
@@ -45,83 +66,117 @@ export default function CalendarPicker({ value, onChange, minDaysFromNow = 4, ma
     return days;
   };
 
-  const prevMonth = () => setView(v => v.month === 0 ? { year: v.year-1, month: 11 } : { ...v, month: v.month-1 });
-  const nextMonth = () => setView(v => v.month === 11 ? { year: v.year+1, month: 0 } : { ...v, month: v.month+1 });
+  const prevMonth = () => setView(v => v.month === 0 ? { year: v.year - 1, month: 11 } : { ...v, month: v.month - 1 });
+  const nextMonth = () => setView(v => v.month === 11 ? { year: v.year + 1, month: 0 } : { ...v, month: v.month + 1 });
 
   const select = (d: Date) => {
     if (isDisabled(d)) return;
-    onChange(d.toISOString().slice(0,10));
+    onChange(d.toISOString().slice(0, 10));
     setOpen(false);
+    setPickingYear(false);
   };
 
   const displayValue = value
-    ? new Date(value + "T00:00:00").toLocaleDateString("en-US", { month:"short", day:"numeric", year:"numeric" })
+    ? new Date(value + "T00:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
     : "";
+
+  // Year range for DOB picker: 1920 → today. For schedule: today's year ± 2.
+  const yearStart = maxDateObj ? 1920 : today.getFullYear();
+  const yearEnd   = maxDateObj ? today.getFullYear() : today.getFullYear() + 2;
+  const years: number[] = [];
+  for (let y = yearEnd; y >= yearStart; y--) years.push(y);
 
   return (
     <div ref={ref} className="relative">
-      <button type="button" onClick={() => setOpen(o => !o)}
+      <button type="button" onClick={() => { setOpen(o => !o); setPickingYear(false); }}
         className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm flex items-center justify-between bg-white focus:outline-none focus:border-yellow-400 focus:shadow-[0_0_0_3px_rgba(230,168,23,0.18)] transition-all"
         style={{ color: value ? "#111827" : "#9ca3af" }}>
-        <span>{displayValue || (placeholder ?? "Select start date")}</span>
+        <span>{displayValue || (placeholder ?? "Select date")}</span>
         <svg className="w-4 h-4 text-gray-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
         </svg>
       </button>
 
       {open && (
-        <div className="absolute z-50 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 p-5 w-72 right-0">
-          {/* Month nav */}
-          <div className="flex items-center justify-between mb-4">
-            <button onClick={prevMonth}
-              className="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-500 text-xl font-light">‹</button>
-            <span className="font-bold text-gray-800 text-sm">{MONTHS[view.month]} {view.year}</span>
-            <button onClick={nextMonth}
-              className="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-500 text-xl font-light">›</button>
+        <div className="absolute z-50 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 p-4 w-72 right-0">
+
+          {/* Month / Year nav header */}
+          <div className="flex items-center justify-between mb-3">
+            {!pickingYear && (
+              <button type="button" onClick={prevMonth}
+                className="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-500 text-xl font-light">‹</button>
+            )}
+            <button type="button" onClick={() => setPickingYear(p => !p)}
+              className="flex-1 text-center font-bold text-gray-800 text-sm hover:text-yellow-500 transition-colors">
+              {pickingYear ? "Select Year" : `${MONTHS[view.month]} ${view.year}`}
+            </button>
+            {!pickingYear && (
+              <button type="button" onClick={nextMonth}
+                className="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-500 text-xl font-light">›</button>
+            )}
           </div>
 
-          {/* Day headers */}
-          <div className="grid grid-cols-7 mb-2">
-            {DAY_HEADERS.map(d => (
-              <div key={d} className="text-center text-[10px] font-bold tracking-wider"
-                style={{ color: d === "Sa" || d === "Su" ? "#fbbf24" : "#9ca3af" }}>{d}</div>
-            ))}
-          </div>
-
-          {/* Day cells */}
-          <div className="grid grid-cols-7 gap-y-1">
-            {getDays().map((date, i) => {
-              if (!date) return <div key={i} />;
-              const disabled  = isDisabled(date);
-              const isWeekend = disableWeekends && (date.getDay() === 0 || date.getDay() === 6);
-              const selected  = value === date.toISOString().slice(0,10);
-              const isToday   = date.toDateString() === today.toDateString();
-
-              return (
-                <button key={i} type="button" onClick={() => select(date)} disabled={disabled}
-                  className="w-9 h-9 rounded-full text-xs flex items-center justify-center mx-auto transition-all cal-day-btn relative"
+          {pickingYear ? (
+            /* Year grid */
+            <div className="grid grid-cols-4 gap-1 max-h-52 overflow-y-auto">
+              {years.map(y => (
+                <button key={y} type="button"
+                  onClick={() => { setView(v => ({ ...v, year: y })); setPickingYear(false); }}
+                  className="py-1.5 rounded-lg text-xs font-semibold transition-all"
                   style={{
-                    background: selected ? "#1E2D4E" : "transparent",
-                    color: selected ? "white" : disabled || isWeekend ? "#d1d5db" : "#111827",
-                    cursor: disabled ? "not-allowed" : "pointer",
-                    fontWeight: isToday ? "700" : "400",
+                    background: view.year === y ? "#1E2D4E" : y === today.getFullYear() ? "#fef3c7" : "transparent",
+                    color: view.year === y ? "white" : "#374151",
                   }}>
-                  {date.getDate()}
-                  {isToday && !selected && (
-                    <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full"
-                      style={{ background: "#E6A817" }} />
-                  )}
+                  {y}
                 </button>
-              );
-            })}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <>
+              {/* Day headers */}
+              <div className="grid grid-cols-7 mb-1">
+                {DAY_HEADERS.map(d => (
+                  <div key={d} className="text-center text-[10px] font-bold tracking-wider"
+                    style={{ color: d === "Sa" || d === "Su" ? "#fbbf24" : "#9ca3af" }}>{d}</div>
+                ))}
+              </div>
 
-          {(disableWeekends || minDaysFromNow > 0) && (
-            <p className="text-[10px] text-gray-400 text-center mt-3 leading-tight">
-              {maxDateObj
-                ? "Future dates unavailable"
-                : `Weekends & next ${minDaysFromNow} days unavailable`}
-            </p>
+              {/* Day cells */}
+              <div className="grid grid-cols-7 gap-y-0.5">
+                {getDays().map((date, i) => {
+                  if (!date) return <div key={i} />;
+                  const disabled  = isDisabled(date);
+                  const isWeekend = disableWeekends && (date.getDay() === 0 || date.getDay() === 6);
+                  const selected  = value === date.toISOString().slice(0, 10);
+                  const isToday   = date.toDateString() === today.toDateString();
+
+                  return (
+                    <button key={i} type="button" onClick={() => select(date)} disabled={disabled}
+                      className="w-8 h-8 rounded-full text-xs flex items-center justify-center mx-auto transition-all relative"
+                      style={{
+                        background: selected ? "#1E2D4E" : "transparent",
+                        color: selected ? "white" : disabled || isWeekend ? "#d1d5db" : "#111827",
+                        cursor: disabled ? "not-allowed" : "pointer",
+                        fontWeight: isToday ? "700" : "400",
+                      }}>
+                      {date.getDate()}
+                      {isToday && !selected && (
+                        <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full"
+                          style={{ background: "#E6A817" }} />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {(maxDateObj || (minDaysFromNow !== undefined && minDaysFromNow > 0) || disableWeekends) && (
+                <p className="text-[10px] text-gray-400 text-center mt-2 leading-tight">
+                  {maxDateObj
+                    ? "Future dates unavailable"
+                    : `Weekends & next ${minDaysFromNow} days unavailable`}
+                </p>
+              )}
+            </>
           )}
         </div>
       )}
