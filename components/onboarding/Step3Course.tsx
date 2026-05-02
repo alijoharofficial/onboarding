@@ -141,11 +141,11 @@ function Counter({ val, min, max, step = 1, format, onChange }: {
   format?: (v: number) => string; onChange: (v: number) => void;
 }) {
   return (
-    <div className="flex items-center gap-1.5">
+    <div className="flex items-center gap-1">
       <button onClick={() => onChange(Math.max(min, val - step))}
         className="w-7 h-7 rounded-full border-2 flex items-center justify-center font-bold text-sm hover:bg-gray-100"
         style={{ borderColor: "#E6A817", color: "#E6A817" }}>−</button>
-      <span className="text-sm font-bold w-14 text-center">
+      <span className="text-sm font-bold w-9 text-center">
         {format ? format(val) : val}
       </span>
       <button onClick={() => onChange(Math.min(max, val + step))}
