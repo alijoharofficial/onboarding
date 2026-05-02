@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+:root {
+  --gold: #E6A817;
+  --navy: #1E2D4E;
+  --bg: #EEF2F8;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  font-family: 'Inter', system-ui, sans-serif;
+  min-height: 100vh;
+}
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateX(24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.step-enter { animation: fadeSlideIn 0.32s ease forwards; }
+
+.avatar-card { transition: all 0.2s ease; cursor: pointer; }
+.avatar-card:hover { transform: translateY(-4px); }
+
+.course-scroll::-webkit-scrollbar { display: none; }
+.course-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Fix browser autofill yellow/blue background */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 40px white inset !important;
+  -webkit-text-fill-color: #111827 !important;
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #E6A817 !important;
+  box-shadow: 0 0 0 3px rgba(230,168,23,0.18) !important;
+  outline: none;
+}
+
+/* Calendar styles */
+.cal-day-btn:hover:not(:disabled) {
+  background: #f0f4fa;
+}
