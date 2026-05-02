@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import CalendarPicker from "@/components/ui/CalendarPicker";
 
 export interface StudentData {
   name: string; email: string; phone: string;
@@ -293,17 +294,23 @@ function StudentCard({ student, index, allowMultiple, onChange, onRemove }: {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className={labelCls}>Student&apos;s Number</label>
-              <div className="flex border border-gray-200 rounded-lg bg-white h-[42px] relative focus-within:border-yellow-400 focus-within:shadow-[0_0_0_3px_rgba(230,168,23,0.15)] transition-all overflow-visible">
+              <div className="flex items-stretch border border-gray-200 rounded-lg bg-white overflow-visible focus-within:border-yellow-400 focus-within:shadow-[0_0_0_3px_rgba(230,168,23,0.15)] transition-all" style={{ height: "42px" }}>
                 <CountryDropdown value={student.countryCode} onChange={v => set("countryCode", v)} />
-                <input type="tel" placeholder="Phone number" value={student.phone}
+                <input type="tel" placeholder="Number" value={student.phone}
                   onChange={e => set("phone", e.target.value)}
-                  className="flex-1 px-2.5 text-sm text-gray-800 placeholder-gray-400 bg-transparent focus:outline-none rounded-r-lg" />
+                  className="min-w-0 flex-1 px-2 text-sm text-gray-800 placeholder-gray-400 bg-transparent focus:outline-none rounded-r-lg" />
               </div>
             </div>
             <div>
               <label className={labelCls}>Date of Birth</label>
-              <input type="date" value={student.dob} max={TODAY}
-                onChange={e => set("dob", e.target.value)} className={inputCls} />
+              <CalendarPicker
+                value={student.dob}
+                onChange={v => set("dob", v)}
+                minDaysFromNow={0}
+                maxDate={TODAY}
+                disableWeekends={false}
+                placeholder="Date of birth"
+              />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3">

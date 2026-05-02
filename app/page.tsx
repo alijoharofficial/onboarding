@@ -96,6 +96,7 @@ export default function OnboardingPage() {
             minutesPerClass={course.minutesPerClass}
             classesPerMonth={classesPerMonth}
             monthlyPrice={monthlyPrice}
+            studentCount={students.length}
             onRestart={restart}
           />
         ) : step === 0 ? (

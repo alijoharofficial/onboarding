@@ -41,29 +41,43 @@ export default function Step3Course({ data, studentCount, onChange, onBack, onNe
       <p className="text-sm text-gray-400 mb-5">Choose the programme that best fits your learning goals</p>
 
       {/* Course cards */}
-      <div className="flex gap-3 mb-4 overflow-x-auto course-scroll pb-1">
+      <div className="grid grid-cols-3 gap-3 mb-4">
         {COURSES.map((c, i) => {
           const isActive = i === activeIdx;
           return (
             <button key={c.id} onClick={() => selectCourse(i)}
-              className="flex-shrink-0 relative rounded-2xl overflow-hidden border-2 transition-all duration-200"
+              className="relative rounded-2xl overflow-hidden border-2 transition-all duration-200"
               style={{
-                width: "152px", height: "160px",
+                height: "130px",
                 borderColor: isActive ? "#1E2D4E" : "#e5e7eb",
-                boxShadow: isActive ? "0 8px 24px rgba(30,45,78,0.25)" : undefined,
+                background: isActive ? "white" : "#1E2D4E",
+                boxShadow: isActive ? "0 6px 20px rgba(30,45,78,0.28)" : undefined,
               }}>
-              {/* Image fills card */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={c.img} alt={c.name}
-                className="absolute inset-0 w-full h-full object-cover transition-opacity"
-                style={{ opacity: isActive ? 0.18 : 1 }} />
-              {/* Gradient overlay for text readability */}
-              <div className="absolute inset-0"
-                style={{ background: isActive
-                  ? "#1E2D4E"
-                  : "linear-gradient(to top, rgba(0,0,0,0.55) 40%, transparent 100%)" }} />
-              <span className="absolute bottom-3 left-0 right-0 text-center text-sm font-bold px-2 leading-tight"
-                style={{ color: "white" }}>{c.name}</span>
+                className="absolute inset-0 w-full h-full object-cover transition-all duration-200"
+                style={{
+                  opacity: isActive ? 1 : 0.3,
+                  filter: isActive ? "none" : "blur(1.5px) brightness(0.55)",
+                }} />
+              {/* Bottom label */}
+              <div className="absolute bottom-0 left-0 right-0 flex items-center justify-center pb-2 pt-6"
+                style={{
+                  background: isActive
+                    ? "linear-gradient(to top, rgba(255,255,255,0.92) 60%, transparent)"
+                    : "linear-gradient(to top, rgba(0,0,0,0.5) 60%, transparent)",
+                }}>
+                <span className="text-xs font-bold leading-tight text-center"
+                  style={{ color: isActive ? "#1E2D4E" : "white" }}>{c.name}</span>
+              </div>
+              {isActive && (
+                <div className="absolute top-2 right-2 w-5 h-5 rounded-full flex items-center justify-center"
+                  style={{ background: "#1E2D4E" }}>
+                  <svg className="w-2.5 h-2.5" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+              )}
             </button>
           );
         })}

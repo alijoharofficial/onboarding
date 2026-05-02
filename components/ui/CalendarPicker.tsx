@@ -5,15 +5,19 @@ interface Props {
   value: string; // YYYY-MM-DD
   onChange: (v: string) => void;
   minDaysFromNow?: number;
+  maxDate?: string; // YYYY-MM-DD, inclusive upper bound
+  disableWeekends?: boolean;
+  placeholder?: string;
 }
 
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 const DAY_HEADERS = ["Mo","Tu","We","Th","Fr","Sa","Su"];
 
-export default function CalendarPicker({ value, onChange, minDaysFromNow = 4 }: Props) {
+export default function CalendarPicker({ value, onChange, minDaysFromNow = 4, maxDate, disableWeekends = true, placeholder }: Props) {
   const [open, setOpen] = useState(false);
   const today = new Date(); today.setHours(0,0,0,0);
   const minDate = new Date(today); minDate.setDate(today.getDate() + minDaysFromNow);
+  const maxDateObj = maxDate ? new Date(maxDate + "T00:00:00") : null;
 
   const [view, setView] = useState(() => {
     const d = value ? new Date(value + "T00:00:00") : new Date(minDate);
@@ -27,7 +31,10 @@ export default function CalendarPicker({ value, onChange, minDaysFromNow = 4 }: 
     return () => document.removeEventListener("mousedown", h);
   }, []);
 
-  const isDisabled = (d: Date) => d < minDate || d.getDay() === 0 || d.getDay() === 6;
+  const isDisabled = (d: Date) =>
+    d < minDate ||
+    (maxDateObj !== null && d > maxDateObj) ||
+    (disableWeekends && (d.getDay() === 0 || d.getDay() === 6));
 
   const getDays = (): (Date | null)[] => {
     const first = new Date(view.year, view.month, 1);
@@ -48,7 +55,7 @@ export default function CalendarPicker({ value, onChange, minDaysFromNow = 4 }: 
   };
 
   const displayValue = value
-    ? new Date(value + "T00:00:00").toLocaleDateString("en-US", { weekday:"short", month:"short", day:"numeric", year:"numeric" })
+    ? new Date(value + "T00:00:00").toLocaleDateString("en-US", { month:"short", day:"numeric", year:"numeric" })
     : "";
 
   return (
@@ -56,7 +63,7 @@ export default function CalendarPicker({ value, onChange, minDaysFromNow = 4 }: 
       <button type="button" onClick={() => setOpen(o => !o)}
         className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm flex items-center justify-between bg-white focus:outline-none focus:border-yellow-400 focus:shadow-[0_0_0_3px_rgba(230,168,23,0.18)] transition-all"
         style={{ color: value ? "#111827" : "#9ca3af" }}>
-        <span>{displayValue || "Select start date"}</span>
+        <span>{displayValue || (placeholder ?? "Select start date")}</span>
         <svg className="w-4 h-4 text-gray-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
         </svg>
@@ -86,7 +93,7 @@ export default function CalendarPicker({ value, onChange, minDaysFromNow = 4 }: 
             {getDays().map((date, i) => {
               if (!date) return <div key={i} />;
               const disabled  = isDisabled(date);
-              const isWeekend = date.getDay() === 0 || date.getDay() === 6;
+              const isWeekend = disableWeekends && (date.getDay() === 0 || date.getDay() === 6);
               const selected  = value === date.toISOString().slice(0,10);
               const isToday   = date.toDateString() === today.toDateString();
 
@@ -109,9 +116,13 @@ export default function CalendarPicker({ value, onChange, minDaysFromNow = 4 }: 
             })}
           </div>
 
-          <p className="text-[10px] text-gray-400 text-center mt-3 leading-tight">
-            Weekends & next {minDaysFromNow} days unavailable
-          </p>
+          {(disableWeekends || minDaysFromNow > 0) && (
+            <p className="text-[10px] text-gray-400 text-center mt-3 leading-tight">
+              {maxDateObj
+                ? "Future dates unavailable"
+                : `Weekends & next ${minDaysFromNow} days unavailable`}
+            </p>
+          )}
         </div>
       )}
     </div>

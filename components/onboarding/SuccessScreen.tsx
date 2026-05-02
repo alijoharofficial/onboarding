@@ -6,10 +6,11 @@ interface Props {
   minutesPerClass: number;
   classesPerMonth: number;
   monthlyPrice: number;
+  studentCount: number;
   onRestart: () => void;
 }
 
-export default function SuccessScreen({ courseName, daysPerWeek, minutesPerClass, classesPerMonth, monthlyPrice, onRestart }: Props) {
+export default function SuccessScreen({ courseName, daysPerWeek, minutesPerClass, classesPerMonth, monthlyPrice, studentCount, onRestart }: Props) {
   return (
     <div className="step-enter flex flex-col items-center text-center py-4">
       {/* Checkmark circle */}
@@ -44,10 +45,11 @@ export default function SuccessScreen({ courseName, daysPerWeek, minutesPerClass
         <SummaryRow label="Course selected" value={courseName} />
         <SummaryRow label="Schedule" value={`${daysPerWeek} days/week · ${minutesPerClass} min`} />
         <SummaryRow label="Classes/month" value={`${classesPerMonth} classes`} />
-        <div className="flex items-center justify-between px-5 py-3.5">
+        <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-100">
           <span className="text-sm text-gray-500">Monthly price</span>
           <span className="font-extrabold text-base" style={{ color: "#E6A817" }}>${monthlyPrice} / month</span>
         </div>
+        <SummaryRow label="Students enrolled" value={studentCount.toString()} />
       </div>
 
       <button
