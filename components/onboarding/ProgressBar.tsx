@@ -12,8 +12,6 @@ export default function ProgressBar({ current, total }: Props) {
           style={{
             background: i < current
               ? "linear-gradient(90deg,#E6A817,#f0b429)"
-              : i === current
-              ? "linear-gradient(90deg,#E6A817 60%,#d1d5db 100%)"
               : "#d1d5db",
           }}
         />
