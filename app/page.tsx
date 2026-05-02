@@ -15,6 +15,7 @@ export default function OnboardingPage() {
   const [done, setDone] = useState(false);
 
   const [whoFor, setWhoFor] = useState<"myself" | "children" | null>(null);
+  const [childCount, setChildCount] = useState(0);
 
   const [student, setStudent] = useState<StudentData>({
     name: "", email: "", phone: "",
@@ -33,9 +34,10 @@ export default function OnboardingPage() {
   const back = () => setStep((s) => Math.max(s - 1, 0));
 
   const handleSubmit = () => setDone(true);
+
   const restart = () => {
     setStep(0); setDone(false);
-    setWhoFor(null);
+    setWhoFor(null); setChildCount(0);
     setStudent({ name: "", email: "", phone: "", countryCode: "+1", dob: "", gender: "" });
     setCourse({ courseId: "quranic", daysPerWeek: 2, minutesPerClass: 30 });
     setSchedule({ days: [], timezone: "", startDate: "", startTime: "" });
@@ -65,7 +67,13 @@ export default function OnboardingPage() {
         {done ? (
           <SuccessScreen onRestart={restart} />
         ) : step === 0 ? (
-          <Step1WhoFor value={whoFor} onChange={setWhoFor} onNext={next} />
+          <Step1WhoFor
+            value={whoFor}
+            childCount={childCount}
+            onChoiceChange={(v) => { setWhoFor(v); if (v === "myself") setChildCount(0); }}
+            onChildCountChange={setChildCount}
+            onNext={next}
+          />
         ) : step === 1 ? (
           <Step2StudentDetails data={student} onChange={setStudent} onNext={next} onBack={back} />
         ) : step === 2 ? (
