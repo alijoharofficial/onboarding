@@ -91,9 +91,22 @@ export default function Step3Course({ data, studentCount, onChange, onBack, onNe
             value={<Counter val={data.daysPerWeek} min={1} max={7}
               onChange={v => onChange({ ...data, daysPerWeek: v })} />} />
           <Row label="Duration / Class"
-            value={<Counter val={data.minutesPerClass} min={30} max={90} step={30}
-              format={v => `${v} min`}
-              onChange={v => onChange({ ...data, minutesPerClass: v })} />} />
+            value={
+              <div className="flex gap-1.5">
+                {[30, 60].map(m => (
+                  <button key={m} type="button"
+                    onClick={() => onChange({ ...data, minutesPerClass: m })}
+                    className="px-3 py-1 rounded-lg text-xs font-bold border-2 transition-all"
+                    style={{
+                      borderColor: data.minutesPerClass === m ? "#E6A817" : "#e5e7eb",
+                      background: data.minutesPerClass === m ? "#fff8e8" : "white",
+                      color: data.minutesPerClass === m ? "#92650a" : "#6b7280",
+                    }}>
+                    {m} min
+                  </button>
+                ))}
+              </div>
+            } />
           <Row label="Classes / Month" value={`${classesPerMonth} classes`} />
           {/* Per-student price */}
           <Row label="Course Price"
