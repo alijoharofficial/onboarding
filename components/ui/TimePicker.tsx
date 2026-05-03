@@ -43,7 +43,7 @@ export default function TimePicker({ value, onChange }: Props) {
       </button>
 
       {open && (
-        <div className="absolute z-50 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 p-4 w-64 right-0">
+        <div className="absolute z-50 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 p-4 right-0" style={{ width: "min(256px, calc(100vw - 24px))" }}>
           {/* Period tabs */}
           <div className="flex gap-1 mb-3 p-1 rounded-xl" style={{ background: "#f3f4f6" }}>
             {PERIODS.map(p => (

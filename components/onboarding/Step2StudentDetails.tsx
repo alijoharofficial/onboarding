@@ -336,8 +336,8 @@ function StudentCard({ student, index, allowMultiple, onChange, onRemove }: {
       </div>
 
       {open && (
-        <div className="px-4 pb-4 space-y-3">
-          <div className="grid grid-cols-2 gap-3">
+        <div className="px-3 sm:px-4 pb-4 space-y-2.5">
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
             <div>
               <label className={labelCls}>Full Name</label>
               <input type="text" placeholder="e.g. Aisha Rahman" value={student.name}
@@ -349,12 +349,12 @@ function StudentCard({ student, index, allowMultiple, onChange, onRemove }: {
                 onChange={e => set("email", e.target.value)} className={inputCls} autoComplete="off" />
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
             <div>
               <label className={labelCls}>Student&apos;s Number</label>
               <div className="flex items-stretch border border-gray-200 rounded-lg bg-white overflow-visible focus-within:border-yellow-400 focus-within:shadow-[0_0_0_3px_rgba(230,168,23,0.15)] transition-all" style={{ height: "42px" }}>
                 <CountryDropdown value={student.countryCode} onChange={v => set("countryCode", v)} />
-                <input type="tel" placeholder="Number" value={student.phone}
+                <input type="tel" placeholder="Phone number" value={student.phone}
                   onChange={e => set("phone", e.target.value)}
                   className="min-w-0 flex-1 px-2 text-sm text-gray-800 placeholder-gray-400 bg-transparent focus:outline-none rounded-r-lg" />
               </div>
@@ -370,7 +370,7 @@ function StudentCard({ student, index, allowMultiple, onChange, onRemove }: {
               />
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
             <div>
               <label className={labelCls}>Gender</label>
               <div className="relative">
@@ -419,19 +419,19 @@ export default function Step2StudentDetails({ students, allowMultiple, onChange,
           className="w-full mt-2 py-2.5 rounded-xl border-2 border-dashed text-sm font-semibold"
           style={{ borderColor: "#E6A817", color: "#E6A817" }}>+ Add Student</button>
       )}
-      <div className="flex items-center justify-between mt-4">
+      {!allValid && (
+        <p className="text-xs text-gray-400 italic text-center mt-3">Fill all fields to continue</p>
+      )}
+      <div className="flex items-center justify-between mt-3">
         <button onClick={onBack}
           className="flex items-center gap-1.5 px-5 py-3 rounded-xl border border-gray-200 text-gray-600 font-semibold text-sm hover:bg-gray-50">
           ← Back</button>
-        <div className="flex items-center gap-3">
-          {!allValid && <span className="text-xs text-gray-400 italic">Fill all fields to continue</span>}
-          <button onClick={onNext} disabled={!allValid}
-            className="px-7 py-3 rounded-xl font-bold text-sm transition-all"
-            style={{
-              background: allValid ? "linear-gradient(135deg,#1E2D4E,#2d4070)" : "#e5e7eb",
-              color: allValid ? "white" : "#9ca3af", cursor: allValid ? "pointer" : "not-allowed",
-            }}>Continue →</button>
-        </div>
+        <button onClick={onNext} disabled={!allValid}
+          className="px-7 py-3 rounded-xl font-bold text-sm transition-all"
+          style={{
+            background: allValid ? "linear-gradient(135deg,#1E2D4E,#2d4070)" : "#e5e7eb",
+            color: allValid ? "white" : "#9ca3af", cursor: allValid ? "pointer" : "not-allowed",
+          }}>Continue →</button>
       </div>
     </div>
   );

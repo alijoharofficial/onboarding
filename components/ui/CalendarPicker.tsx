@@ -98,7 +98,7 @@ export default function CalendarPicker({
       </button>
 
       {open && (
-        <div className="absolute z-50 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 p-4 w-72 right-0">
+        <div className="absolute z-50 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 p-4 right-0" style={{ width: "min(288px, calc(100vw - 24px))" }}>
 
           {/* Month / Year nav header */}
           <div className="flex items-center justify-between mb-3">

@@ -60,7 +60,7 @@ export default function OnboardingPage() {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center px-4 py-10"
+      className="min-h-screen flex items-start sm:items-center justify-center px-3 sm:px-4 py-6 sm:py-10"
       style={{ background: "linear-gradient(135deg,#dde6f5 0%,#eef2f8 50%,#e8eef8 100%)" }}
     >
       <div className="fixed top-[-80px] right-[-80px] w-80 h-80 rounded-full opacity-20 pointer-events-none"
@@ -69,7 +69,7 @@ export default function OnboardingPage() {
         style={{ background: "radial-gradient(circle,#1E2D4E,transparent)" }} />
 
       <div
-        className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl px-8 py-8"
+        className="relative w-full max-w-lg bg-white rounded-2xl sm:rounded-3xl shadow-2xl px-4 sm:px-8 py-6 sm:py-8"
         style={{ boxShadow: "0 20px 60px rgba(30,45,78,0.12), 0 4px 16px rgba(30,45,78,0.06)" }}
       >
         {/* Free trial banner */}

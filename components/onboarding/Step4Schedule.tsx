@@ -264,7 +264,7 @@ export default function Step4Schedule({ data, daysNeeded, onChange, onBack, onSu
         </div>
 
         {/* Date + Time */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div>
             <label className={labelCls}>Preferred Start Date</label>
             <CalendarPicker value={data.startDate} onChange={v => onChange({ ...data, startDate: v })} minDaysFromNow={4} />
@@ -287,20 +287,20 @@ export default function Step4Schedule({ data, daysNeeded, onChange, onBack, onSu
         </div>
       </div>
 
-      <div className="flex items-center justify-between mt-5">
+      {!isValid && (
+        <p className="text-xs text-gray-400 italic text-center mt-4">Fill all fields to continue</p>
+      )}
+      <div className="flex items-center justify-between mt-3">
         <button onClick={onBack}
           className="flex items-center gap-1.5 px-5 py-3 rounded-xl border border-gray-200 text-gray-600 font-semibold text-sm hover:bg-gray-50">
           ← Back</button>
-        <div className="flex items-center gap-3">
-          {!isValid && <span className="text-xs text-gray-400 italic">Fill all fields to continue</span>}
-          <button onClick={onSubmit} disabled={!isValid}
-            className="px-7 py-3 rounded-xl font-bold text-sm transition-all"
-            style={{
-              background: isValid ? "linear-gradient(135deg,#1E2D4E,#2d4070)" : "#e5e7eb",
-              color: isValid ? "white" : "#9ca3af", cursor: isValid ? "pointer" : "not-allowed",
-            }}>
-            Submit Enrolment ✓</button>
-        </div>
+        <button onClick={onSubmit} disabled={!isValid}
+          className="px-6 py-3 rounded-xl font-bold text-sm transition-all"
+          style={{
+            background: isValid ? "linear-gradient(135deg,#1E2D4E,#2d4070)" : "#e5e7eb",
+            color: isValid ? "white" : "#9ca3af", cursor: isValid ? "pointer" : "not-allowed",
+          }}>
+          Submit Enrolment ✓</button>
       </div>
     </div>
   );
