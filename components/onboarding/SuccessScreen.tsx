@@ -57,7 +57,7 @@ export default function SuccessScreen({ courseName, daysPerWeek, minutesPerClass
         className="w-full py-3.5 rounded-xl font-bold text-sm text-white hover:opacity-90 transition-all"
         style={{ background: "linear-gradient(135deg,#1E2D4E,#2d4070)" }}
       >
-        Enrol Another Student
+        Access Your Account →
       </button>
     </div>
   );
