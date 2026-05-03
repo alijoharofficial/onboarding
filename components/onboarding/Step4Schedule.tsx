@@ -237,13 +237,13 @@ export default function Step4Schedule({ data, daysNeeded, onChange, onBack, onSu
               {data.days.length} / {daysNeeded} selected
             </span>
           </div>
-          <div className="flex gap-2 flex-wrap mt-2">
+          <div className="grid grid-cols-7 gap-1 mt-2">
             {DAYS.map(d => {
               const weekend = isWeekend(d);
               const sel = data.days.includes(d);
               return (
                 <button key={d} onClick={() => !weekend && toggleDay(d)}
-                  className="w-11 h-11 rounded-full border-2 text-xs font-bold transition-all"
+                  className="aspect-square rounded-full border-2 text-[11px] font-bold transition-all flex items-center justify-center"
                   style={
                     weekend ? { background: "#f9f9f9", color: "#d1d5db", borderColor: "#f0f0f0", cursor: "not-allowed" }
                     : sel ? { background: "#1E2D4E", color: "white", borderColor: "#1E2D4E" }

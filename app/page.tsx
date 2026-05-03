@@ -74,15 +74,15 @@ export default function OnboardingPage() {
       >
         {/* Free trial banner */}
         {!done && (
-          <div className="flex items-center justify-center gap-2 mb-5 py-2 px-4 rounded-xl"
+          <div className="flex items-center justify-center gap-1.5 mb-5 py-2 px-3 rounded-xl"
             style={{ background: "linear-gradient(135deg,#fef9ec,#fdf3d0)", border: "1px solid #f5d97a" }}>
-            <span className="text-base">🎁</span>
-            <span className="text-sm font-bold tracking-wide" style={{ color: "#92650a" }}>
+            <span className="text-sm flex-shrink-0">🎁</span>
+            <span className="text-xs sm:text-sm font-bold tracking-wide whitespace-nowrap" style={{ color: "#92650a" }}>
               7 Days Free Trial
             </span>
-            <span className="text-xs font-medium px-2 py-0.5 rounded-full"
+            <span className="text-[10px] sm:text-xs font-medium px-2 py-0.5 rounded-full whitespace-nowrap flex-shrink-0"
               style={{ background: "#E6A817", color: "white" }}>
-              No credit card required
+              No card required
             </span>
           </div>
         )}
